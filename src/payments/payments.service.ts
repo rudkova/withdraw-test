@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PaymentsRepository } from './payments.repository';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UserService } from '../user/user.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaymentsTransactionService } from './payments.transactions.service';
+import { UserService } from '../user/user.service';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -15,14 +14,18 @@ export class PaymentsService {
     const { userId } = payment;
     const user = await this.userService.getUserById(userId);
     if (!user) {
-      throw new Error(`User with id ${userId} not found`);
+      console.log(`User with id ${userId} not found`);
+      throw new HttpException(
+        `User with id ${userId} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     try {
       await this.paymentsTransactionService.withdraw(payment);
     } catch (e) {
       console.log(`Withdraw failed for user with id ${userId}`, e.message);
-      throw new Error(e.message);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
