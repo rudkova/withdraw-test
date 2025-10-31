@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../shared/database/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  getUserById(userId: number): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { id: userId } });
+  }
 
   async getBalance(userId: number): Promise<number> {
     const user = await this.prisma.user.findUnique({
@@ -16,5 +21,12 @@ export class UserRepository {
     }
 
     return user.balance.toNumber();
+  }
+
+  async updateBalance(userId: number, balance: number): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { balance },
+    });
   }
 }

@@ -1,0 +1,25 @@
+### Create a new withdrawal payment
+POST http://localhost:3000/payments/withdraw
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "amount": 100
+}
+
+### Test with invalid user ID
+POST http://localhost:3000/payments/withdraw
+Content-Type: application/json
+
+{
+  "userId": 999,
+  "amount": 50.00
+}
+
+### Test with missing required fields
+POST http://localhost:3000/payments/withdraw
+Content-Type: application/json
+
+{
+  "userId": 1
+}
