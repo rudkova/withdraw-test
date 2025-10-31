@@ -16,10 +16,18 @@ Content-Type: application/json
   "amount": 50.00
 }
 
-### Test with missing required fields
+### Test with missing amount
 POST http://localhost:3000/payments/withdraw
 Content-Type: application/json
 
 {
   "userId": 1
+}
+
+### Test with missing userId
+POST http://localhost:3000/payments/withdraw
+Content-Type: application/json
+
+{
+  "amount": 280.46
 }
