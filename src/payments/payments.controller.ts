@@ -7,7 +7,7 @@ export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post('/withdraw')
-  async withdraw(@Body() payment: CreatePaymentDto): Promise<void> {
-    await this.paymentsService.withdraw(payment);
+  withdraw(@Body() payment: CreatePaymentDto): Promise<string> {
+    return this.paymentsService.withdraw(payment);
   }
 }

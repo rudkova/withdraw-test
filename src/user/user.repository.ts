@@ -10,7 +10,7 @@ export class UserRepository {
     return this.prisma.user.findUnique({ where: { id: userId } });
   }
 
-  async getBalance(userId: number): Promise<number> {
+  async getBalance(userId: number): Promise<string> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { balance: true },
@@ -20,7 +20,7 @@ export class UserRepository {
       throw new Error('User not found');
     }
 
-    return user.balance.toNumber();
+    return user.balance.toString();
   }
 
   async updateBalance(userId: number, balance: number): Promise<void> {

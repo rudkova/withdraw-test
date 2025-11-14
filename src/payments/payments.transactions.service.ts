@@ -14,10 +14,10 @@ const DELAY = process.env.DELAY ? Number(process.env.DELAY) : 1000;
 export class PaymentsTransactionService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async withdraw({ userId, amount }: CreatePaymentDto): Promise<void> {
+  async withdraw({ userId, amount }: CreatePaymentDto): Promise<string> {
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       try {
-        await this.prisma.$transaction(
+        const balance = await this.prisma.$transaction(
           async (tx) => {
             // get user payments to calculate actual balance
             const payments = await tx.payment.findMany({
@@ -72,7 +72,8 @@ export class PaymentsTransactionService {
             isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
           },
         );
-        return;
+
+        return balance.toString();
       } catch (error) {
         // need to implement retry logic based on error type but for test exercise i'll leave it as it is for simplicity
         console.log(`Attempt ${attempt} failed with error: ${error.message}.`);
@@ -83,5 +84,6 @@ export class PaymentsTransactionService {
         }
       }
     }
+    throw new Error('Withdraw failed');
   }
 }
