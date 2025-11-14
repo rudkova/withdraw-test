@@ -12,6 +12,7 @@ Configure database connection in .env file, fill DATABASE_URL
 
 ```bash
 $ npx prisma migrate dev
+$ npm run prisma:seed
 ```
 
 ## Compile and run the project
