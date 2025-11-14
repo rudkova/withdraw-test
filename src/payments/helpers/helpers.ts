@@ -1,5 +1,6 @@
 import { PaymentWithAction } from '../types/types';
 
+// todo move calculations in database
 const calculateBalance = (payments: PaymentWithAction[]): number => {
   return payments.reduce((acc, cur) => {
     acc +=

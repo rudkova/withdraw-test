@@ -25,7 +25,15 @@ $ npm run start
 $ npm run start:dev
 ```
 
-To test withdraw functionality use test_endpoints/payments.http file and test_endpoints/users.http file.
+### Run Redis locally
+
+```bash
+$ docker run -p 6379:6379 -d redis
+```
+
+### To test withdraw functionality
+
+use test_endpoints/payments.http file and test_endpoints/users.http file.
 
 These files are an extension for WebStorm IDE.
 
