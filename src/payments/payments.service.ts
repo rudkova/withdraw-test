@@ -2,15 +2,16 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaymentsTransactionService } from './payments.transactions.service';
 import { UserService } from '../user/user.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import { REDIS_CLIENT, REDIS_KEYS } from '../redis/redis.constants';
-import Redis from 'ioredis';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
+import { getUserBalanceCacheKey } from '../shared/utils/cache-key.util';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     private readonly paymentsTransactionService: PaymentsTransactionService,
     private readonly userService: UserService,
-    @Inject(REDIS_CLIENT) private readonly redisClient: Redis,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async withdraw(payment: CreatePaymentDto): Promise<string> {
@@ -26,13 +27,7 @@ export class PaymentsService {
 
     try {
       const balance = await this.paymentsTransactionService.withdraw(payment);
-
-      await this.redisClient.set(
-        `${REDIS_KEYS.userBalance}${userId}`,
-        balance,
-        'EX',
-        10,
-      );
+      await this.cacheService.set(getUserBalanceCacheKey(userId), balance);
 
       return balance;
     } catch (e) {

@@ -5,7 +5,6 @@ import { PaymentsRepository } from './payments.repository';
 import { PaymentsTransactionService } from './payments.transactions.service';
 import { UserModule } from '../user/user.module';
 import { PrismaService } from '../shared/database/prisma.service';
-import { RedisModule } from '../redis/redis.module';
 
 @Module({
   controllers: [PaymentsController],
@@ -15,6 +14,6 @@ import { RedisModule } from '../redis/redis.module';
     PaymentsTransactionService,
     PrismaService,
   ],
-  imports: [UserModule, RedisModule],
+  imports: [UserModule],
 })
 export class PaymentsModule {}

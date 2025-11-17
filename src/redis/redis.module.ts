@@ -2,6 +2,10 @@ import { REDIS_CLIENT } from './redis.constants';
 import { Module } from '@nestjs/common';
 import Redis from 'ioredis';
 
+/**
+ * This module is unused now. I use cache-manager instead.
+ */
+// todo implement redis from here: https://peturgeorgievv.com/blog/create-redis-service-with-nestjs-use-in-every-project
 @Module({
   providers: [
     {

@@ -1,14 +1,15 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from '@prisma/client';
-import { REDIS_CLIENT, REDIS_KEYS } from '../redis/redis.constants';
-import Redis from 'ioredis';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
+import { getUserBalanceCacheKey } from '../shared/utils/cache-key.util';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    @Inject(REDIS_CLIENT) private readonly redisClient: Redis,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   getUserById(userId: number): Promise<User | null> {
@@ -22,22 +23,18 @@ export class UserService {
 
   async getBalance(userId: number): Promise<string> {
     try {
-      const cachedBalance = await this.redisClient.get(
-        `${REDIS_KEYS.userBalance}${userId}`,
-      );
-
-      if (cachedBalance) {
-        return cachedBalance;
-      }
-
       const balance = await this.userRepository.getBalance(userId);
 
-      await this.redisClient.set(
-        `${REDIS_KEYS.userBalance}${userId}`,
-        balance,
-        'EX',
-        10,
-      );
+      try {
+        await this.cacheService.set(
+          getUserBalanceCacheKey(userId),
+          balance,
+          10000,
+        );
+        console.log('Cache set success for', getUserBalanceCacheKey(userId));
+      } catch (err) {
+        console.error('Cache set error:', err);
+      }
 
       return balance;
     } catch (e) {

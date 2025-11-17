@@ -43,6 +43,7 @@ These files are an extension for WebStorm IDE.
 - Business Services
 - Transactional Services (to encapsulate transactional logic)
 - Repositories
+- Interceptors
 
 ## Modules
 ### Payments Module
@@ -61,3 +62,16 @@ These files are an extension for WebStorm IDE.
 ## Database
 - **ORM**: Prisma with PostgreSQL
 - **Schema**: `prisma/schema.prisma` defines User, Payment, and Action models
+
+## Interceptors
+- **HttpCacheInterceptor** - global cache interceptor. Returns cached response if it exists
+
+## Redis
+- **RedisModule** - unused now. I use cache-manager instead.
+
+## Cache
+- **cache-manager** - used for caching
+- **cache-manager-redis-store** - used for cache-manager to store cache in redis
+- **HttpCacheInterceptor** - global cache interceptor. Returns cached response if it exists
+- **getUserBalanceCacheKey** - function to generate cache key for user balance
+- **formatUrlToRedisKey** - function to format url to redis key
